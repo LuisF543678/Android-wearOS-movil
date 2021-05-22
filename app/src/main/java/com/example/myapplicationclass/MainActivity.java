@@ -3,7 +3,9 @@ package com.example.myapplicationclass;
 //import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +37,12 @@ public class MainActivity extends WearableActivity {
     public void notifyMe(View view) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANEL_ID = "my_channel_id_o1";
+
+        Intent viewIntent = new Intent(this, NotificationDetails.class);
+
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
              NotificationChannel notificationChannel =
                      new NotificationChannel(NOTIFICATION_CHANEL_ID,"My notification",
@@ -46,20 +54,23 @@ public class MainActivity extends WearableActivity {
             notificationChannel.enableVibration(true);
 
             notificationManager.createNotificationChannel(notificationChannel);
+
          }
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, NOTIFICATION_CHANEL_ID);
 
          notificationBuilder.setAutoCancel(true)
-                 //icon
+                 // Icon
                  .setSmallIcon(R.drawable.ic_full_sad)
                  // Title
                 .setContentTitle("My notification")
-                 // contend
-                .setContentText("hello from here!")
-                 //info
-                 .setContentInfo("info");
+                 // Content
+                .setContentText("Hi my name is Luis Fernando")
+                 // Info
+                 .setContentInfo("Info")
+                 // Content
+                .setContentIntent(viewPendingIntent);
 
          notificationManager.notify(1, notificationBuilder.build());
     }
