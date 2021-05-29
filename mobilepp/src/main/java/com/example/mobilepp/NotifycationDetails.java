@@ -14,9 +14,24 @@ public class NotifycationDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifycation_details);
 
+
         CharSequence charSequence = getMessageText(getIntent());
+         /*
         String reply_was = getResources().getString(R.string.reply_was);
         Toast.makeText(this, reply_was+charSequence, Toast.LENGTH_LONG).show();
+         */
+        String result = charSequence.toString();
+
+        if (result.equalsIgnoreCase("yes")){
+            // Open map
+
+
+        }else if (result.equalsIgnoreCase("no")){
+            // send sms
+
+        }else if (result.equalsIgnoreCase("may be")){
+            // show toast
+        }
     }
 
     private CharSequence getMessageText(Intent intent) {
