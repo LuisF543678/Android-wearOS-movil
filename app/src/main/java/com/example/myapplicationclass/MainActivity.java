@@ -14,11 +14,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.RemoteInput;
 
 //import androidx.core.app.NotificationCompat;
 //import androidx.core.app.NotificationManagerCompat;
 
-public class MainActivity extends WearableActivity {
+public class    MainActivity extends WearableActivity {
 
     private TextView mTextView;
 
@@ -74,4 +75,67 @@ public class MainActivity extends WearableActivity {
 
          notificationManager.notify(1, notificationBuilder.build());
     }
+
+    public void voiceInput(View view) {
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANEL_ID = "my_channel_id_o1";
+
+        Intent viewIntent = new Intent(this, NotificationDetails.class);
+
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        String reply_label = getResources().getString(R.string.reply_label);
+        String[] reply_choices = getResources().getStringArray(R.array.reply_choices);
+
+        RemoteInput remoteInput = new RemoteInput.Builder(NotificationUtils.EXTRA_VOICE_REPLAY )
+                .setLabel(reply_label)
+                .setChoices(reply_choices)
+                .build();
+
+        NotificationCompat.Action.Builder notificationActionBuilder =
+                new NotificationCompat.Action.Builder(R.drawable.ic_expand_less_white_22, "My voice",viewPendingIntent);
+
+        notificationActionBuilder.addRemoteInput(remoteInput);
+
+        NotificationCompat.Action action = notificationActionBuilder.build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel notificationChannel =
+                    new NotificationChannel(NOTIFICATION_CHANEL_ID,"My notification",
+                            NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+
+            notificationManager.createNotificationChannel(notificationChannel);
+
+        }
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, NOTIFICATION_CHANEL_ID);
+
+        notificationBuilder.setAutoCancel(true)
+                // Icon
+                .setSmallIcon(R.drawable.ic_full_sad)
+                // Title
+                .setContentTitle("My notification")
+                // Content
+                .setContentText("Hi my name is Luis Fernando")
+                // Info
+                .setContentInfo("Info")
+                // Content
+                .setContentIntent(viewPendingIntent)
+                // Action
+                .addAction(action)
+                .extend(new NotificationCompat.WearableExtender().setContentAction(0));
+
+        notificationManager.notify(1, notificationBuilder.build());
+
+
+    }
+
 }
